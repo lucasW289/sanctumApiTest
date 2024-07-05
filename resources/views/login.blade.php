@@ -61,6 +61,7 @@
 
                         // Redirect to the 'profile' route
                         window.location.href = data.redirect;
+                        alert("im here")
                     } else {
                         // Handle error or display message
                         console.error(data.message);

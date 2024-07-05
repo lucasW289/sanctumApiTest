@@ -109,10 +109,19 @@ class ApiController extends Controller
     }
 
     //Profile
+    public function profileAPi()
+    {
+        $userData = auth()->user();
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile Success',
+        ], 200);
+    }
+
     public function profile()
     {
         $userData = auth()->user();
-        return view('profile', ['user' => $userData]);
+        return view('/profile', ['user' => $userData]);
     }
 
 

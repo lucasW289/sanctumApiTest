@@ -19,4 +19,8 @@
         <button type="submit">Logout</button>
     </form>
 </body>
+<script>
+
+    doc
+</script>
 </html>

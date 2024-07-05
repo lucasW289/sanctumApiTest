@@ -9,7 +9,8 @@ Route::post('/', function () {
 });
 
 //Login Page
-Route::view('/login', 'login');
+Route::view('/login', 'login')->name('login');
 
 // Profile Page
-Route::middleware('auth:sanctum')->get('/profile', [ApiController::class, 'profile'])->name('profile');
+// Route::middleware('auth:sanctum')->get('/profile', [ApiController::class, 'profile'])->name('profile');
+Route::view('/profile', 'profile');
