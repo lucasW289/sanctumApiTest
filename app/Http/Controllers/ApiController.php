@@ -15,42 +15,42 @@ class ApiController extends Controller
     public function register(Request $request)
     {
         try {
-            $validateUser = validator::make(
+            $validateUser = Validator::make(
                 $request->all(),
                 [
                     'name' => 'required',
                     'email' => 'required|email|unique:users,email',
                     'password' => 'required'
-
                 ]
             );
 
             if ($validateUser->fails()) {
-                return response()->json(
-                    [
-                        'status' => false,
-                        'message' => 'validation error',
-                        'errors' => $validateUser->errors()
-                    ],
-                    401
-                );
+                return response()->json([
+                    'status' => false,
+                    'message' => 'The Email has been used to register. Please Login instead',
+                    'errors' => $validateUser->errors()
+                ], 401);
             }
-            $user = User::create(
-                [
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => $request->password
-                ]
-            );
-            return response()->json(
-                [
-                    'status' => true,
-                    'message' => 'Registration Success',
-                    'token' => $user->createToken("API TOKEN")->plainTextToken,
-                    'redirect' => route('profile')
-                ],
-                200
-            );
+
+            // Create the user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ]);
+
+            // Simulate a failure scenario (for example)
+            if (!$user) {
+                throw new \Exception('Failed to create user.');
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Registration Success',
+                'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'redirect' => route('profile')
+            ], 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -96,7 +96,7 @@ class ApiController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Login Success',
+                'message' => 'Authorized\nWelcome Back!',
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
                 'redirect' => route('profile')
             ], 200);

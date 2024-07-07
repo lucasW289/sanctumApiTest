@@ -5,21 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <link rel="stylesheet" href="{{ asset('css/profileStyle.css') }}">
 </head>
 
 <body>
-    <h2>Welcome, <span id="user-name"></span></h2>
+    <div class="container">
+        <h2>Welcome, <span id="user-name"></span></h2>
 
-    <div>
-        <h3>Your Profile Information</h3>
-        <p><strong>Name:</strong> <span id="profile-name"></span></p>
-        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <div class="profile-info">
+            <h3>Your Profile Information</h3>
+            <p><strong>Name:</strong> <span id="profile-name"></span></p>
+            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        </div>
+
+        <div class="logout-btn">
+            <form id="logoutForm" method="POST" action="/logout">
+                @csrf
+                <button type="submit">Logout</button>
+            </form>
+        </div>
     </div>
-
-    <form id="logoutForm" method="POST" action="/logout">
-        @csrf
-        <button type="submit">Logout</button>
-    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

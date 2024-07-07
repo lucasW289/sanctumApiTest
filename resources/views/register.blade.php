@@ -72,25 +72,24 @@
                             icon: 'success',
                             title: 'Registration Successful!',
                             text: 'Redirecting to profile page...',
-                            timer: 2000, // Time in milliseconds
+                            timer: 2000,
                             timerProgressBar: true,
                             showConfirmButton: false
                         }).then(() => {
-                            // Store token in localStorage
                             localStorage.setItem('token', data.token);
-                            // Redirect to profile page
                             window.location.href = data.redirect;
                         });
                     } else {
-                        // Handle errors or show messages
-                        console.error('Registration failed:', data.message);
-                        // Example: Show error message in an alert
-                        alert('Registration failed: ' + data.message);
+                        // Show SweetAlert for failure
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Registration Failed',
+                            text: data.message // Display error message from API
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // Example: Show error message in an alert
                     alert('An error occurred, please try again later.');
                 });
             });

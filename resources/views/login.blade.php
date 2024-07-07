@@ -1,3 +1,4 @@
+<!-- resources/views/login.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login</title>
     <link rel="stylesheet" href="{{ asset('css/loginStyle.css') }}">
-
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -40,6 +42,8 @@
 
     <p>Don't have an account? <a href="{{ url('/register') }}">Register here</a></p>
 
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
@@ -61,19 +65,33 @@
                         // Successful login
                         localStorage.setItem('token', data.token); // Store token securely
 
-                        // Redirect to the 'profile' route
-                        window.location.href = data.redirect;
-                        alert("im here")
+                        // Display success message using SweetAlert2
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful',
+                            text: 'Redirecting to your profile...',
+                            showConfirmButton: false,
+                            timer: 1500 // Timer for auto close
+                        }).then(() => {
+                            // Redirect to the 'profile' route
+                            window.location.href = data.redirect;
+                        });
                     } else {
-                        // Handle error or display message
-                        console.error(data.message);
+                        // Show SweetAlert for failure
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: data.message // Display error message from API
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    alert('An error occurred, please try again later.');
                 });
         });
     </script>
+
 </body>
 
 </html>
