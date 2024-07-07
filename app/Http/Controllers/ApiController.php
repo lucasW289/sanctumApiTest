@@ -109,35 +109,19 @@ class ApiController extends Controller
     }
 
     //Profile
-    public function profileAPi()
+    public function profileApi()
     {
         $userData = auth()->user();
         return response()->json([
             'status' => true,
             'message' => 'Profile Success',
+            'user' => $userData,
         ], 200);
     }
 
-    public function profile()
-    {
-        $userData = auth()->user();
-        return view('/profile', ['user' => $userData]);
-    }
 
 
-    //Logout
-   /* public function logout ()
-    {
-        auth()->user()->tokens()->delete();
 
-        return response()->json(
-            [
-                'status' => true,
-                'message' => 'Successfully Logged Out',
-            ],
-            200
-        );
-    }*/
 }
 
 //login, register, profile, logout

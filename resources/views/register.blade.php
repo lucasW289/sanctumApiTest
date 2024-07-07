@@ -6,6 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
+    <link rel="stylesheet" href="{{ asset('css/profileStyle.css') }}">
+
+
 </head>
 <body>
     <h2>User Registration</h2>
@@ -20,7 +23,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ url('/api/register') }}">
+    <form method="POST" action="{{ route('register') }}">
         @csrf
 
         <div>
