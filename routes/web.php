@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 
 //Registration Page
-Route::get('/', function () {
+Route::get('/register', function () {
     return view('register');
 });
 

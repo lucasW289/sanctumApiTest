@@ -1,17 +1,16 @@
 <!-- resources/views/register.blade.php -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
-    <link rel="stylesheet" href="{{ asset('css/profileStyle.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/registerStyle.css') }}">
 
 
 </head>
 <body>
-    <h2>User Registration</h2>
+    <h2>User Registration</h2><br>
 
     @if ($errors->any())
         <div>
@@ -23,7 +22,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('registerApi') }}">
         @csrf
 
         <div>

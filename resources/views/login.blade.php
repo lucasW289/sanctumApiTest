@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login</title>
+    <link rel="stylesheet" href="{{ asset('css/loginStyle.css') }}">
+
 </head>
 
 <body>
@@ -36,7 +38,7 @@
         <button type="submit">Login</button>
     </form>
 
-    <p>Don't have an account? <a href="{{ url('/') }}">Register here</a></p>
+    <p>Don't have an account? <a href="{{ url('/register') }}">Register here</a></p>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {

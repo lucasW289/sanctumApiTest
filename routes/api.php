@@ -10,7 +10,7 @@ use App\Http\Controllers\ApiController;
 })->middleware('auth:sanctum');*/
 
 //Register
-Route::post("register", [ApiController::class, "register"]);
+Route::post("register", [ApiController::class, "register"])->name('registerApi');
 
 //Login
 Route::post('login', [ApiController::class, 'login'])->name('login');
