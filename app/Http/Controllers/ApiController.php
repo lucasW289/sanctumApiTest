@@ -47,6 +47,7 @@ class ApiController extends Controller
                     'status' => true,
                     'message' => 'Registration Success',
                     'token' => $user->createToken("API TOKEN")->plainTextToken,
+                    'redirect' => route('profile')
                 ],
                 200
             );
@@ -99,7 +100,6 @@ class ApiController extends Controller
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
                 'redirect' => route('profile')
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -118,10 +118,6 @@ class ApiController extends Controller
             'user' => $userData,
         ], 200);
     }
-
-
-
-
 }
 
 //login, register, profile, logout
