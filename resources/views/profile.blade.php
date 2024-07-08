@@ -31,6 +31,7 @@
         <div class="files-list">
             <h3>Your Uploaded Files</h3>
             <ul id="filesList"></ul>
+            <button id="shareButton">Share</button>
         </div>
 
         <div class="logout-btn">
@@ -103,6 +104,78 @@
                     });
             });
 
+            document.getElementById('shareButton').addEventListener('click', () => {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                if (checkboxes.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Files Selected',
+                        text: 'Please select files to share.'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Share Files',
+                    html: '<input id="emailInput" class="swal2-input" placeholder="Enter Email Address">',
+                    showCancelButton: true,
+                    confirmButtonText: 'Share',
+                    preConfirm: () => {
+                        const email = document.getElementById('emailInput').value;
+                        if (!email) {
+                            Swal.showValidationMessage('Email address is required');
+                        }
+                        return email;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const email = result.value;
+                        shareFiles(email, checkboxes);
+                    }
+                });
+            });
+
+            function shareFiles(email, checkboxes) {
+                const fileIds = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+                fetch('/api/share-files', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            fileIds: fileIds
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Files Shared',
+                                text: 'Selected files were successfully shared.'
+                            });
+                            loadUserFiles();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'There was a problem with the fetch operation'
+                        });
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            }
+
             function loadUserFiles() {
                 fetch('/api/files', {
                         method: 'GET',
@@ -117,7 +190,12 @@
                         filesList.innerHTML = '';
                         data.files.forEach(file => {
                             const li = document.createElement('li');
-                            li.textContent = file.file_name;
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.value = file.id;
+
+                            const fileName = document.createElement('span');
+                            fileName.textContent = file.file_name;
 
                             const downloadBtn = document.createElement('button');
                             downloadBtn.textContent = 'Download';
@@ -125,6 +203,8 @@
                                 downloadFile(file.id);
                             });
 
+                            li.appendChild(checkbox);
+                            li.appendChild(fileName);
                             li.appendChild(downloadBtn);
                             filesList.appendChild(li);
                         });

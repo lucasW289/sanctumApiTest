@@ -29,5 +29,9 @@ Route::group([
 
     Route::get('files', [ApiController::class, 'listFiles'])->name('listFiles');
 
+    Route::post('share-files', [ApiController::class, 'shareFiles'])->name('shareFiles');
+
+
+
 
 });

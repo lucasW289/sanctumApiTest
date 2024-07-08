@@ -52,7 +52,6 @@ class ApiController extends Controller
                 'token' => $user->createToken("API TOKEN")->plainTextToken,
                 'redirect' => route('profile')
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -160,21 +159,61 @@ class ApiController extends Controller
         return Storage::disk('public')->download($file->file_path, $file->file_name);
     }
 
-    // List Files
-public function listFiles()
-{
-    $user = Auth::user();
-    $files = $user->files()->get();
+    public function listFiles()
+    {
+        $user = Auth::user();
+        $files = $user->files()->get();
 
-    return response()->json([
-        'status' => true,
-        'files' => $files,
-    ], 200);
+        return response()->json([
+            'status' => true,
+            'files' => $files,
+        ], 200);
+    }
+    public function shareFiles(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'fileIds' => 'required|array',
+                'fileIds.*' => 'exists:files,id,user_id,' . auth()->id(), // Ensure user owns the file
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+
+            $targetUser = User::where('email', $request->email)->first();
+
+            if (!$targetUser) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'The target user does not exist.'
+                ], 404);
+            }
+
+            foreach ($request->fileIds as $fileId) {
+                $file = File::findOrFail($fileId);
+                // Duplicate the file for the target user
+                $newFile = $file->replicate();
+                $newFile->user_id = $targetUser->id; // Assign ownership to the target user
+                $newFile->save();
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Files shared successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
 
-}
-
-
-
-
-//login, register, profile, logout
+    //login, register, profile, logout
