@@ -21,7 +21,13 @@ Route::group([
     //User Profile
     Route::get("profile", [ApiController::class, "profileApi"])->name('profileApi');
 
+    // File Upload
+    Route::post('upload-file', [ApiController::class, 'uploadFile'])->name('uploadFile');
 
+    // File Download
+    Route::get('download-file/{id}', [ApiController::class, 'downloadFile'])->name('downloadFile');
+
+    Route::get('files', [ApiController::class, 'listFiles'])->name('listFiles');
 
 
 });

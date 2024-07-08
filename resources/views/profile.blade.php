@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <link rel="stylesheet" href="{{ asset('css/profileStyle.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -18,6 +19,20 @@
             <p><strong>Email:</strong> <span id="profile-email"></span></p>
         </div>
 
+        <div class="file-upload">
+            <h3>Upload File</h3>
+            <form id="uploadForm" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="file" id="fileInput">
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        <div class="files-list">
+            <h3>Your Uploaded Files</h3>
+            <ul id="filesList"></ul>
+        </div>
+
         <div class="logout-btn">
             <form id="logoutForm" method="POST" action="/logout">
                 @csrf
@@ -28,13 +43,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Retrieve the token from localStorage
             const token = localStorage.getItem('token');
-
-            // Define the API endpoint
             const apiEndpoint = '/api/profile';
 
-            // Make the GET request with the Bearer token
             fetch(apiEndpoint, {
                     method: 'GET',
                     headers: {
@@ -42,32 +53,116 @@
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    // Extract the user data from the response
                     const user = data.user;
-
-                    // Update the HTML content with the user's profile information
                     document.getElementById('user-name').textContent = user.name;
                     document.getElementById('profile-name').textContent = user.name;
                     document.getElementById('profile-email').textContent = user.email;
+                    loadUserFiles();
                 })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
+                .catch(error => console.error('There was a problem with the fetch operation:', error));
 
-            // Handle form submission for logout
-            document.getElementById('logoutForm').addEventListener('submit', async (event) => {
+            document.getElementById('uploadForm').addEventListener('submit', (event) => {
                 event.preventDefault();
-                // Clear token from localStorage
+                const fileInput = document.getElementById('fileInput');
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                fetch('/api/upload-file', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'File uploaded successfully'
+                            });
+                            loadUserFiles();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'File upload failed'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'There was a problem with the fetch operation'
+                        });
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            });
+
+            function loadUserFiles() {
+                fetch('/api/files', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const filesList = document.getElementById('filesList');
+                        filesList.innerHTML = '';
+                        data.files.forEach(file => {
+                            const li = document.createElement('li');
+                            li.textContent = file.file_name;
+
+                            const downloadBtn = document.createElement('button');
+                            downloadBtn.textContent = 'Download';
+                            downloadBtn.addEventListener('click', () => {
+                                downloadFile(file.id);
+                            });
+
+                            li.appendChild(downloadBtn);
+                            filesList.appendChild(li);
+                        });
+                    })
+                    .catch(error => console.error('There was a problem with the fetch operation:', error));
+            }
+
+            function downloadFile(fileId) {
+                fetch(`/api/download-file/${fileId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'file'; // You can set the file name here
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    })
+                    .catch(error => console.error('There was a problem with the fetch operation:', error));
+            }
+
+            document.getElementById('logoutForm').addEventListener('submit', (event) => {
+                event.preventDefault();
                 localStorage.removeItem('token');
-                // Redirect to login page
-                window.location.href = '/login'; // Replace with your actual login page URL
+                window.location.href = '/login';
             });
         });
     </script>

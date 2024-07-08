@@ -1,37 +1,107 @@
 /* Example profileStyle.css */
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     line-height: 1.6;
     margin: 0;
     padding: 20px;
     background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
-    max-width: 600px;
-    margin: auto;
+    max-width: 700px;
+    margin: 30px auto;
     background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 20px;
+    font-size: 24px;
+    margin-bottom: 30px;
+    color: #4CAF50;
 }
 
-.profile-info {
-    margin-bottom: 20px;
+.profile-info, .file-upload, .files-list {
+    margin-bottom: 30px;
+    text-align: left;
 }
 
-.profile-info h3 {
+.profile-info h3, .file-upload h3, .files-list h3 {
+    font-size: 20px;
     margin-bottom: 10px;
+    border-bottom: 2px solid #4CAF50;
+    display: inline-block;
+    padding-bottom: 5px;
+    color: #333;
 }
 
 .profile-info p {
     margin: 5px 0;
+    font-size: 16px;
+}
+
+.file-upload {
+    text-align: left;
+}
+
+.file-upload form {
+    display: flex;
+    align-items: center;
+}
+
+.file-upload input[type="file"] {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.file-upload button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.file-upload button:hover {
+    background-color: #45a049;
+}
+
+.files-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.files-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.files-list li button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.files-list li button:hover {
+    background-color: #0056b3;
 }
 
 .logout-btn {
@@ -51,4 +121,18 @@ h2 {
 
 .logout-btn button:hover {
     background-color: #c82333;
+}
+
+/* SweetAlert2 Custom Styles */
+.swal2-popup {
+    font-size: 1.6rem !important;
+    border-radius: 10px !important;
+}
+
+.swal2-title {
+    font-size: 2rem !important;
+}
+
+.swal2-icon {
+    border-radius: 50% !important;
 }
